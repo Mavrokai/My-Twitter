@@ -37,4 +37,7 @@ Contient les fichiers journaux pour déboguer et suivre les erreurs et activité
 
 Techno utilisées :
 
+-PHP
+-MySQL
+-JavaScript
 -TailWind
