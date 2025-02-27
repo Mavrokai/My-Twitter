@@ -34,3 +34,7 @@ Contient les tests unitaires pour les modèles, contrôleurs et vues. Par exempl
 /logs :
 
 Contient les fichiers journaux pour déboguer et suivre les erreurs et activités de l'application.
+
+Techno utilisées :
+
+-TailWind
