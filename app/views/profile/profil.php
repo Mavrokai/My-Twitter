@@ -37,6 +37,7 @@
                 </div>
             </div>
         </div>
+
         <main><br>
             <!-- Posts Section -->
             <div class="bg-[#f8f7f776] p-4 rounded-lg shadow-md border border-gray-300">
@@ -103,7 +104,6 @@
                     });
                 });
             </script>
-
 
             <!-- Sidebar Droite -->
             <aside class="fixed top-0 right-0 w-1/6 h-full p-3 space-y-3 bg-[#f8f7f776] shadow-lg rounded-l-xl hidden md:block text-sm">
@@ -248,7 +248,7 @@
                 });
             </script>
 
-
+        </main>
+    </main>
 </body>
-
 </html>
