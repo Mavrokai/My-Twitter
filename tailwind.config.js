@@ -1,0 +1,1 @@
+// Création d'un fichier tailwind.config.js pour personnaliser les configurations de Tailwind CSS dans l'extension.
