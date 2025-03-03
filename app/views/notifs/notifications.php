@@ -25,7 +25,7 @@
 
         <!-- Onglets avec état actif -->
         <div class="bg-[#D4BEB8] flex justify-around py-2 shadow-md">
-            <button id="tabAll" class="text-black font-semibold bg-[#6D7244] text-white px-4 py-1 rounded-t-lg border-b-4 border-[#6D7244]">All</button>
+            <button id="tabAll" class="text-black font-medium px-4 py-1 rounded-t-lg border-b-4">All</button>
             <button id="tabSuivi" class="text-black font-medium px-4 py-1 rounded-t-lg border-b-4">Suivi</button>
         </div>
 
