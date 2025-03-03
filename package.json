@@ -4,13 +4,16 @@
   "description": "Détails des dossiers et fichiers :",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tailwindcss -i ./public/assets/css/app.css -o ./public/assets/css/all.css --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tailwindcss/cli": "^4.0.9",
+    "@tailwindcss/cli": "^4.0.9"
+  },
+  "devDependencies": {
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.9"

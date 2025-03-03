@@ -4,23 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications</title>
+    <link rel="stylesheet" href="../../../public/assets/img/LogoYjungle.webp">
     <link rel="stylesheet" href="../../../public/assets/css/all.css">
 </head>
+
 <body class="bg-[#59713E] px-20">
 
     <!-- Sidebar Gauche -->
-    <aside class="fixed top-0 left-0 w-1/6 h-full bg-[#f8f7f776] p-3 flex flex-col space-y-3 shadow-lg rounded-r-xl hidden md:flex text-sm">
-        <div class="flex items-center space-x-2">
-            <img src="../assets/LogoYjungle.png" class="w-8 h-8 rounded-full" alt="logo">
-            <h1 class="text-md font-bold">Menu</h1>
-        </div>
-        <nav class="space-y-2">
-            <a href="#" class="flex items-center space-x-2 p-2 hover:bg-gray-300 rounded">🏠<span>Accueil</span></a>
-            <a href="#" class="flex items-center space-x-2 p-2 hover:bg-gray-300 rounded">🔍<span>Explorer</span></a>
-            <a href="#" class="bg-[#59713E] flex items-center space-x-2 p-2 hover:bg-gray-300 rounded-lg">🔔<span>Notifications</span></a>
-            <a href="#" class="flex items-center space-x-2 p-2 hover:bg-gray-300 rounded">📮<span>Messages</span></a>
-            <a href="#" class="flex items-center space-x-2 p-2 hover:bg-gray-300 rounded">👤<span>Profil</span></a>
-        </nav>
+    <aside>
+        <?php include  '../partials/sidebar.php'; ?>
     </aside>
 
     <!-- Conteneur principal centré -->
@@ -32,7 +24,7 @@
 
         <!-- Onglets avec état actif -->
         <div class="bg-[#D4BEB8] flex justify-around py-2 shadow-md">
-            <button id="tabAll" class="text-black font-semibold bg-[#6D7244] text-white px-4 py-1 rounded-t-lg border-b-4 border-[#6D7244]">All</button>
+            <button id="tabAll" class="text-black font-medium px-4 py-1 rounded-t-lg border-b-4">All</button>
             <button id="tabSuivi" class="text-black font-medium px-4 py-1 rounded-t-lg border-b-4">Suivi</button>
         </div>
 
@@ -102,7 +94,7 @@
         </div>
     </aside>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const tabAll = document.getElementById("tabAll");
             const tabSuivi = document.getElementById("tabSuivi");
 
@@ -112,15 +104,16 @@
                 inactiveTab.classList.add("text-black", "font-medium");
             }
 
-            tabAll.addEventListener("click", function () {
+            tabAll.addEventListener("click", function() {
                 activateTab(tabAll, tabSuivi);
             });
 
-            tabSuivi.addEventListener("click", function () {
+            tabSuivi.addEventListener("click", function() {
                 activateTab(tabSuivi, tabAll);
             });
         });
     </script>
 
 </body>
+
 </html>
