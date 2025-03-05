@@ -8,14 +8,12 @@
     <link rel="stylesheet" href="../../../public/assets/css/all.css">
 </head>
 
-<body class="bg-[#59713E] px-20">
+<body class="bg-[#59713E]">
 
     <!-- Sidebar Gauche -->
-    <aside class="fixed top-0 left-0 h-screen z-50 md:left-[12%] md:w-48 lg:w-64">
-        <div class="h-full bg-[#f8f7f776] p-4 rounded-2xl w-full">
+
             <?php include '../partials/sidebar.php'; ?>
-        </div>
-    </aside>
+
 
     <!-- Conteneur principal centré -->
     <div class="w-full max-w-2xl mt-6 mx-auto pl-[2%]">

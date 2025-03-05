@@ -73,7 +73,11 @@ if (isset($_GET['action'])) {
                 if ($hashedPassword === $user['password_hash']) {
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
+                    $_SESSION['bio'] = $user['bio'];
+                    $_SESSION['display_name'] = $user['display_name'];
                     $_SESSION['email'] = $user['email'];
+
+
                     header("Location: ../views/profile/profil.php");
                     exit();
                 } else {

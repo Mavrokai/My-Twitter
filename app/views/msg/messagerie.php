@@ -12,11 +12,9 @@
 <body class="relative ml-[17%]">
 
     <!-- Sidebar responsive -->
-    <aside class="fixed top-8.5 h-screen z-50 md:w-48 lg:w-64"">
-        <div class=" h-full bg-[#f8f7f776] p-4 rounded-2xl w-full">
+
         <?php include '../partials/sidebar.php'; ?>
-        </div>
-    </aside>
+
 
     <main class="min-h-screen md:ml-48 lg:ml-70 p-4">
 

@@ -1,5 +1,5 @@
 <?php
-
+include_once __DIR__ . '/../config/config.php';
 
 // Inscription pas touche
 function checkUserExists($pdo, $username, $email)
