@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications</title>
-    <link rel="stylesheet" href="../../../public/assets/img/LogoYjungle.webp">
+    <link rel="shortcut icon" href="../../../public/assets/LogoYjungle.png" type="image/x-icon">
     <link rel="stylesheet" href="../../../public/assets/css/all.css">
 </head>
 
 <body class="bg-[#59713E] px-20">
 
     <!-- Sidebar Gauche -->
-    <aside>
-        <?php include  '../partials/sidebar.php'; ?>
+    <aside class="fixed top-0 left-0 h-screen z-50 md:left-[12%] md:w-48 lg:w-64">
+        <div class="h-full bg-[#f8f7f776] p-4 rounded-2xl w-full">
+            <?php include '../partials/sidebar.php'; ?>
+        </div>
     </aside>
 
     <!-- Conteneur principal centré -->
