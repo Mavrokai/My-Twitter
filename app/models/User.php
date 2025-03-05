@@ -13,7 +13,7 @@ function checkUserExists($pdo, $username, $email)
 function createUser($pdo, $userData)
 {
 
-
+    
     $hashedPassword = hash('ripemd160', $userData['password'] . 'vive le projet tweet_academy');
 
     $query = "INSERT INTO Users 

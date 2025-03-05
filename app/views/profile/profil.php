@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . '/../../config/config.php'; ?>
+<?php include_once __DIR__ . '/../../config/config.php';?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -254,4 +254,5 @@
         </main>
     </main>
 </body>
+
 </html>
