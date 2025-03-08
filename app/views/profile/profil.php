@@ -1,5 +1,13 @@
 <?php
-include_once '../../controllers/ProfileController.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+if (!isset($_SESSION)) {
+    session_start();
+}
+include __DIR__ . '/../../controllers/ProfileController.php';
+include __DIR__ . '/../../controllers/TweetController.php';
 ?>
 
 <!DOCTYPE html>
@@ -10,12 +18,11 @@ include_once '../../controllers/ProfileController.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../../public/assets/css/all.css">
     <link rel="shortcut icon" href="../../../public/assets/LogoYjungle.png" type="image/x-icon">
-    <title>Profil de <?php echo $_SESSION['username']; ?></title>
+    <title>Profil de <?php echo $profile_username; ?></title>
 </head>
 
 <body class="bg-[#59713E]">
     <!-- Sidebar Gauche -->
-
     <?php include '../partials/sidebar.php'; ?>
 
     <!-- Contenu Central Scrollable -->
@@ -26,14 +33,21 @@ include_once '../../controllers/ProfileController.php';
                 <div class="absolute top-0 left-3 -mt-8 z-10">
                     <img src="https://i.pinimg.com/736x/72/f7/3e/72f73e03e134d091171fc0ff0d3fe5b8.jpg" class="w-16 h-16 rounded-full border-3 border-white shadow-lg" alt="Avatar">
                 </div>
-                <button id="openEditModal" class="absolute right-3 top-3 bg-gray-200 px-3 py-1 rounded-lg hover:bg-gray-300">Modifier</button>
+                <?php if ($is_owner): ?>
+                    <button id="openEditModal" class="absolute right-3 top-3 bg-gray-200 px-3 py-1 rounded-lg hover:bg-gray-300">Modifier</button>
+                <?php endif; ?>
                 <div class="ml-20">
-                    <h2 class="text-lg font-bold"><?php echo $_SESSION['display_name']; ?></h2>
-                    <p class="text-gray-600">@<?php echo $_SESSION['username'] ?></p>
+                    <h2 class="text-lg font-bold"><?php echo $profile_display_name; ?></h2>
+                    <p class="text-gray-600">@<?php echo $profile_username; ?></p>
                 </div>
-                <div class="mt-2 mb-4">
-                    <p class="text-sm text-black leading-normal max-w-prose">
-                        <?= !empty($_SESSION['bio']) ? htmlspecialchars($_SESSION['bio']) : '📝 Écrivez quelque chose sur vous...' ?>
+                <div class="mt-6 mb-6 px-4 py-3 rounded-xl">
+                    <div class="mb-1 pb-2">
+                        <h2 class="text-lg font-semibold text-[#000000]">
+                            📖 Biographie
+                        </h2>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed text-base px-3 py-2 rounded-lg">
+                        <?= !empty($profile_bio) ? htmlspecialchars($profile_bio) : '<span class="italic text-gray-400">« Écrivez quelque chose sur vous... »</span>' ?>
                     </p>
                 </div>
                 <div class="flex mt-2 space-x-4 text-sm">
@@ -50,44 +64,46 @@ include_once '../../controllers/ProfileController.php';
         </div>
 
         <!-- Modal Edit Profile -->
-        <div id="editProfileModal" class="fixed z-50 inset-0 bg-black bg-opacity-75 backdrop-filter backdrop-blur-md flex justify-center items-center hidden">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-                <h2 class="text-lg font-semibold text-gray-800 mb-3">Modifier le profil</h2>
-                <form action="../../controllers/ProfileController.php" method="POST" class="space-y-3">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Username</label>
-                        <input type="text" name="username" value="<?php echo $_SESSION['username']; ?>"
-                            class="w-full p-2 border border-gray-300 rounded">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Display Name</label>
-                        <input type="text" name="display_name" value="<?php echo $_SESSION['display_name']; ?>"
-                            class="w-full p-2 border border-gray-300 rounded">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" name="email" value="<?php echo $_SESSION['email']; ?>"
-                            class="w-full p-2 border border-gray-300 rounded">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
-                        <input type="password" name="password"
-                            class="w-full p-2 border border-gray-300 rounded" placeholder="Laissez vide pour ne pas modifier">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Bio</label>
-                        <textarea name="bio" class="w-full p-2 border border-gray-300 rounded" rows="3"><?php echo $_SESSION['bio']; ?></textarea>
-                    </div>
-                    <div class="flex justify-end space-x-2">
-                        <button type="button" id="closeEditModal" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Annuler</button>
-                        <button type="submit" name="update_profile" class="bg-[#59713E] text-white px-4 py-2 rounded hover:bg-green-700">Enregistrer</button>
-                    </div>
-                </form>
+        <?php if ($is_owner): ?>
+            <div id="editProfileModal" class="fixed z-50 inset-0 backdrop-filter backdrop-blur-md pt-[25vh] pl-[75vh] justify-center items-center hidden">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3">Modifier le profil</h2>
+                    <form action="../../controllers/ProfileController.php" method="POST" class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Username</label>
+                            <input type="text" name="username" value="<?php echo $_SESSION['username']; ?>"
+                                class="w-full p-2 border border-gray-300 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Display Name</label>
+                            <input type="text" name="display_name" value="<?php echo $_SESSION['display_name']; ?>"
+                                class="w-full p-2 border border-gray-300 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" name="email" value="<?php echo $_SESSION['email']; ?>"
+                                class="w-full p-2 border border-gray-300 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
+                            <input type="password" name="password"
+                                class="w-full p-2 border border-gray-300 rounded" placeholder="Laissez vide pour ne pas modifier">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Bio</label>
+                            <textarea name="bio" class="w-full p-2 border border-gray-300 rounded" rows="3"><?php echo $_SESSION['bio']; ?></textarea>
+                        </div>
+                        <div class="flex justify-end space-x-2">
+                            <button type="button" id="closeEditModal" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Annuler</button>
+                            <button type="submit" name="update_profile" class="bg-[#59713E] text-white px-4 py-2 rounded hover:bg-green-700">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
 
 
-        <!-- Messages flash session pour la modal edit profile -->
+        <!-- Messages flash -->
         <div class="fixed top-4 right-210 z-50 max-w-xs">
             <?php if (isset($_SESSION['success'])) : ?>
                 <div class="bg-green-100 border border-green-400 text-green-700 px-5 py-3 rounded relative mb-3" role="alert">
@@ -99,8 +115,7 @@ include_once '../../controllers/ProfileController.php';
                         </svg>
                     </span>
                 </div>
-            <?php
-                unset($_SESSION['success']);
+            <?php unset($_SESSION['success']);
             endif; ?>
 
             <?php if (isset($_SESSION['error'])) : ?>
@@ -113,64 +128,70 @@ include_once '../../controllers/ProfileController.php';
                         </svg>
                     </span>
                 </div>
-            <?php
-                unset($_SESSION['error']);
+            <?php unset($_SESSION['error']);
             endif; ?>
         </div>
 
         <main><br>
+
+
             <!-- Posts Section -->
-            <div class="bg-[#f8f7f776] p-4 rounded-lg shadow-md border border-gray-300">
-                <h3 class="text-md font-semibold text-gray-800">Félicitation les nouveaux mariés Mathéo et Lisa</h3>
-                <p class="text-xs text-gray-600">#love #old #wedding #hiring :)</p>
-                <div class="mt-3 flex justify-center">
-                    <img src="../../../public/assets/IMG_2128.jpg" class="object-cover rounded-lg w-48 h-48">
-                </div>
-                <button class="like-btn flex items-center space-x-1 bg-gray-200 text-gray-800 px-3 py-1 rounded-md shadow hover:bg-gray-300 transition mt-2">
-                    ❤️ <span class="like-count">0</span>
-                </button>
-            </div>
-            <div class="space-y-4 mt-3">
-                <div class="bg-[#f8f7f776] p-4 rounded-lg shadow-md border border-gray-300">
-                    <h3 class="text-md font-semibold text-gray-800">Un matin paisible 🌅</h3>
-                    <p class="text-xs text-gray-600">Rien de mieux qu'un café et un bon livre pour bien commencer la journée ! ☕📖</p>
-                    <div class="mt-3 flex justify-center">
-                        <img src="https://i.pinimg.com/736x/d7/8a/0b/d78a0b8afcd40e5b25afbb25983814ed.jpg" class="object-cover rounded-lg w-48 h-48">
-                    </div>
-                    <button class="like-btn flex items-center space-x-1 bg-gray-200 text-gray-800 px-3 py-1 rounded-md shadow hover:bg-gray-300 transition mt-2">
-                        ❤️ <span class="like-count">0</span>
-                    </button>
-                </div>
+            <?php foreach ($user_posts as $post): ?>
+                <div class="bg-[#f8f7f776] p-4 rounded-lg shadow-md border border-gray-300 mb-4">
+                    <div class="flex items-start space-x-3">
+                        <img src="https://i.pinimg.com/736x/72/f7/3e/72f73e03e134d091171fc0ff0d3fe5b8.jpg"
+                            class="w-12 h-12 rounded-full border-2 border-white">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="font-semibold"><?= htmlspecialchars($profile_display_name) ?></span>
+                                <span class="text-gray-600">@<?= htmlspecialchars($profile_username) ?></span>
+                                <span class="text-gray-500 text-sm">• <?= date('d/m/Y H:i', strtotime($post['created_at'])) ?></span>
+                            </div>
 
-                <div class="bg-[#f8f7f776] p-4 rounded-lg shadow-md border border-gray-300">
-                    <h3 class="text-md font-semibold text-gray-800">Nouvelle recette testée 🍰</h3>
-                    <p class="text-xs text-gray-600">J'ai essayé une tarte au citron maison et c'était une tuerie ! 😋</p>
-                    <div class="mt-3 flex justify-center">
-                        <img src="https://i.pinimg.com/736x/99/f4/cd/99f4cd1837f05524ab229a1a87254ee1.jpg" class="object-cover rounded-lg w-48 h-48">
-                    </div>
-                    <button class="like-btn flex items-center space-x-1 bg-gray-200 text-gray-800 px-3 py-1 rounded-md shadow hover:bg-gray-300 transition mt-2">
-                        ❤️ <span class="like-count">0</span>
-                    </button>
-                </div>
+                            <!-- Contenu du tweet avec URL courte -->
+                            <p class="mt-3 text-black">
+                                <?= processContent($post['content']) ?>
+                            </p>
 
-                <div class="bg-[#f8f7f776] p-4 rounded-lg shadow-md border border-gray-300">
-                    <h3 class="text-md font-semibold text-gray-800">Petit coin de paradis 🌿</h3>
-                    <p class="text-xs text-gray-600">Une balade dans la nature pour se ressourcer, ça fait du bien ! 🍃</p>
-                    <div class="mt-3 flex justify-center">
-                        <img src="https://i.pinimg.com/736x/83/09/76/830976930e58af7e7103cc227f476831.jpg" class="object-cover rounded-lg w-48 h-48">
-                    </div>
+                            <!-- Affichage des images avec leur URL courte -->
+                            <?php if (!empty($post['media_data'])): ?>
+                                <div class="mt-3 flex flex-wrap gap-2">
+                                    <?php foreach (explode('||', $post['media_data']) as $media):
+                                        [$file_name, $short_url] = explode('|SHORT|', $media); ?>
+                                        <a href="/public/get_image.php?short_url=<?= $short_url ?>" target="_blank">
+                                            <img src="/public/get_image.php?short_url=<?= $short_url ?>"
+                                                class="object-cover rounded-lg w-48 h-48"
+                                                alt="Image du tweet">
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
 
-                    <button class="like-btn flex items-center space-x-1 bg-gray-200 text-gray-800 px-3 py-1 rounded-md shadow hover:bg-gray-300 transition mt-2">
-                        ❤️ <span class="like-count">0</span>
-                    </button>
+                            <button class="like-btn flex items-center space-x-1 bg-gray-200 text-gray-800 px-3 py-1 rounded-md shadow hover:bg-gray-300 transition mt-2">
+                                ❤️ <span class="like-count">0</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            <?php endforeach; ?>
+
 
             <!-- Sidebar Droite -->
             <aside class="fixed top-0 right-0 w-1/6 h-full p-3 space-y-3 bg-[#f8f7f776] shadow-lg rounded-l-xl hidden md:block text-sm">
-                <div class="bg-white p-3 rounded-lg shadow">
-                    <input type="text" placeholder="Recherche" class="w-full bg-gray-100 p-2 rounded outline-none">
+
+                <div class="bg-white p-3 rounded-lg shadow relative">
+                    <input
+                        type="text"
+                        placeholder="Recherche @utilisateur ou #hashtag"
+                        class="w-full bg-gray-100 p-2 rounded outline-none focus:ring-2 focus:ring-[#59713E]"
+                        id="globalSearch">
+
+                    <div id="searchResults" class="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto opacity-0 translate-y-[-10px] transition-all duration-200 origin-top pointer-events-none">
+                        <!-- Les résultats seront injectés ici -->
+                    </div>
                 </div>
+
+
                 <div class="bg-white p-3 rounded-lg shadow">
                     <h2 class="font-semibold">Abonnement</h2>
                     <p class="text-xs text-gray-600">Abonne-toi pour débloquer des fonctionnalités !</p>
@@ -204,36 +225,52 @@ include_once '../../controllers/ProfileController.php';
                 <span class="text-md font-bold">+</span>
                 <span>Créer un post</span>
             </div>
-            <!-- Bouton pour ouvrir le modal -->
-            <button id="openModal" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#59713E] text-white px-4 py-2 rounded-full shadow-lg flex items-center space-x-1 cursor-pointer hover:bg-green-700 text-sm">
-                <span class="text-md font-bold">+</span>
-                <span>Créer un post</span>
-            </button>
 
-            <!-- Modal -->
-            <div id="postModal" class="fixed z-50 inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-3">Créer un post</h2>
-                    <form action="controller/postController.php" method="POST" enctype="multipart/form-data" class="space-y-3">
-                        <input type="text" name="title" class="w-full p-2 border border-gray-300 rounded" placeholder="Titre du post">
-                        <textarea name="content" class="w-full p-2 border border-gray-300 rounded" placeholder="Exprime-toi..."></textarea>
-                        <input type="file" name="image" id="imageUpload" class="w-full p-2 border border-gray-300 rounded">
 
-                        <!-- Preview de l'image -->
-                        <div id="imagePreview" class="w-full h-48 border border-gray-300 rounded flex items-center justify-center">
-                            <img id="previewImg" src="#" alt="Aperçu de l'image" class="max-w-full max-h-full rounded">
-                        </div>
+            <?php if ($is_owner): ?>
+                <!-- Bouton Flottant "+" -->
+                <button id="openModal" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#59713E] text-white px-4 py-2 rounded-full shadow-lg flex items-center space-x-1 cursor-pointer hover:bg-green-700 text-sm">
+                    <span class="text-md font-bold">+</span>
+                    <span>Créer un post</span>
+                </button>
 
-                        <div class="flex justify-end space-x-2">
-                            <button type="button" id="closeModal" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Annuler</button>
-                            <button type="submit" class="bg-[#59713E] text-white px-4 py-2 rounded hover:bg-green-700">Publier</button>
-                        </div>
-                    </form>
+                <!-- Modal -->
+                <div id="postModal" class="fixed z-50 inset-0 backdrop-filter backdrop-blur-md pt-[25vh] pl-[75vh] justify-center items-center hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-3">Créer un post</h2>
+                        <form action="../../controllers/TweetController.php" method="POST" enctype="multipart/form-data" class="space-y-3">
+                            <div class="relative">
+                                <textarea
+                                    name="content"
+                                    class="w-full p-2 border border-gray-300 rounded"
+                                    placeholder="Exprime-toi..."
+                                    maxlength="140"
+                                    id="tweetContent"></textarea>
+                                <div id="charCount" class="absolute bottom-2 right-2 text-sm text-gray-500 bg-white px-1">
+                                    140
+                                </div>
+                            </div>
+                            <input type="file" name="image" id="imageUpload" class="w-full p-2 border border-gray-300 rounded">
+
+
+                            <!-- Preview de l'image -->
+                            <div id="imagePreview" class="w-full h-48 border border-gray-300 rounded flex items-center justify-center">
+                                <img id="previewImg" src="#" alt="Aperçu de l'image" class="max-w-full max-h-full rounded">
+                            </div>
+
+                            <div class="flex justify-end space-x-2">
+                                <button type="button" id="closeModal" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Annuler</button>
+                                <button type="submit" class="bg-[#59713E] text-white px-4 py-2 rounded hover:bg-green-700">Publier</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
+
 
         </main>
     </main>
+    <script src="../../../public/assets/js/recherche.js"></script>
     <script src="../../../public/assets/js/profil.js"></script>
 </body>
 

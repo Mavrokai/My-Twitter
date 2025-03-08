@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mer. 05 mars 2025 à 15:27
+-- Généré le : sam. 08 mars 2025 à 23:00
 -- Version du serveur : 8.0.41-0ubuntu0.24.04.1
 -- Version de PHP : 8.3.17
 
@@ -33,6 +33,14 @@ CREATE TABLE `Follows` (
   `followed_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Déchargement des données de la table `Follows`
+--
+
+INSERT INTO `Follows` (`follower_id`, `following_id`, `followed_at`) VALUES
+(26, 27, '2025-03-06 10:26:21'),
+(27, 26, '2025-03-06 21:52:02');
+
 -- --------------------------------------------------------
 
 --
@@ -43,6 +51,13 @@ CREATE TABLE `Hashtags` (
   `hashtag_id` int NOT NULL,
   `tag` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `Hashtags`
+--
+
+INSERT INTO `Hashtags` (`hashtag_id`, `tag`) VALUES
+(24, 'cuicui');
 
 -- --------------------------------------------------------
 
@@ -55,6 +70,13 @@ CREATE TABLE `Media` (
   `file_name` varchar(255) NOT NULL,
   `short_url` varchar(8) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `Media`
+--
+
+INSERT INTO `Media` (`media_id`, `file_name`, `short_url`) VALUES
+(21, '67ccc5d9cfbc1_f50cd615729f87790f78decbb6e835b9.jpg', '7d78eed0');
 
 -- --------------------------------------------------------
 
@@ -92,6 +114,13 @@ CREATE TABLE `PostHashtag` (
   `hashtag_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Déchargement des données de la table `PostHashtag`
+--
+
+INSERT INTO `PostHashtag` (`post_id`, `hashtag_id`) VALUES
+(51, 24);
+
 -- --------------------------------------------------------
 
 --
@@ -102,6 +131,13 @@ CREATE TABLE `PostMedia` (
   `post_id` int DEFAULT NULL,
   `media_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `PostMedia`
+--
+
+INSERT INTO `PostMedia` (`post_id`, `media_id`) VALUES
+(51, 21);
 
 -- --------------------------------------------------------
 
@@ -116,6 +152,13 @@ CREATE TABLE `Posts` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `reply_to` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `Posts`
+--
+
+INSERT INTO `Posts` (`post_id`, `user_id`, `content`, `created_at`, `reply_to`) VALUES
+(51, 27, 'CouCou @Mavrokai regarde titi #cuicui', '2025-03-08 22:34:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -145,6 +188,7 @@ CREATE TABLE `Themes` (
 --
 
 INSERT INTO `Themes` (`theme_id`, `theme_name`) VALUES
+(2, 'Dark Theme'),
 (1, 'Default Theme');
 
 -- --------------------------------------------------------
@@ -170,22 +214,8 @@ CREATE TABLE `Users` (
 --
 
 INSERT INTO `Users` (`user_id`, `username`, `display_name`, `password_hash`, `email`, `bio`, `date_of_birth`, `theme_id`, `created_at`) VALUES
-(11, 'johndoe', 'John Doe', 'aafdc23870ecbcd3d557b6423a8982134e17927e', 'johndoe@mail.com', 'Amateur de café et code', '1990-05-15', 1, '2025-03-03 12:29:23'),
-(12, 'janedoe42', 'Jane Doe', '399d8287e47263fc91c907d42f4ac02910cb8f61', 'janedoe42@mail.com', 'Voyageuse du monde', '1988-08-22', 1, '2025-03-03 12:29:23'),
-(13, 'bob_leponge', 'Bob Square', '5355bcb8eab083b19fa56c27fcfb8eb329662215', 'bob@krusty.com', NULL, '1995-02-28', 1, '2025-03-03 12:29:23'),
-(14, 'tech_guru', 'Marc Tech', '67f33497e269de7f940d170d2738ab6d68a7a55c', 'marc.tech@mail.com', 'Passionné de nouvelles technologies', '2000-12-01', 1, '2025-03-03 12:29:23'),
-(15, 'laura_rose', 'Laura Rose', 'ef0a110cccac95235abb41bccf9d9995c5ea8577', 'laura.rose@mail.com', 'Photographe amateur 🌸', '1999-07-17', 1, '2025-03-03 12:29:23'),
-(16, 'mike89', 'Mike Tyson', 'd08f77ee3dee44b988480fd7b3737a123b9cc11a', 'mike.t@mail.com', 'Fan de sport extrême', '1989-11-11', 1, '2025-03-03 12:29:23'),
-(17, 'sarah_connor', 'Sarah Connor', '11fee33453c427b3e6ebabb7d2d2120312c0e7c9', 'sarah.c@mail.com', 'En guerre contre les machines', '1985-04-21', 1, '2025-03-03 12:29:23'),
-(18, 'zuck42', 'Mark Z', 'e06f3ae857eaac6a0ba8deef51e382f321951475', 'mark.z@meta.com', 'Building the future', '1984-05-14', 1, '2025-03-03 12:29:23'),
-(19, 'gamergirl', 'Emma Stone', '7882cd4962d9ba7b38139c3618db4bac7e22c913', 'emma.gamer@mail.com', 'Streamer Fortnite 🎮', '2002-09-30', 1, '2025-03-03 12:29:23'),
-(20, 'pythonista', 'Guido Van', '65017033c0e13e2a168bf74103a199f315a31d85', 'guido@python.org', 'Créateur de Python 🐍', '1970-01-01', 1, '2025-03-03 12:29:23'),
-(21, 'Jeanjack', 'VAlou', '7b982fa3f2e2605bf6138dbfb5f5c1340700eb9d', 'rigel.Codja@epitech.eu', 'blablanlalzefzegezg', '2025-03-07', 1, '2025-03-04 14:58:50'),
-(22, 'JAcki', 'VAlou', '7b982fa3f2e2605bf6138dbfb5f5c1340700eb9d', 'rigel.Codja@epitech.fr', NULL, '2025-03-07', 1, '2025-03-04 15:01:13'),
-(23, 'zefzef', 'VAlou', '7b982fa3f2e2605bf6138dbfb5f5c1340700eb9d', 'jack@fed.fr', NULL, '2025-03-20', 1, '2025-03-04 22:13:21'),
-(24, 'zefzefqsd', 'VAlou', '7b982fa3f2e2605bf6138dbfb5f5c1340700eb9d', 'rigel.Codja@epitech.com', NULL, '2025-03-15', 1, '2025-03-04 22:14:48'),
-(25, 'zefzefqsdqsd', 'VAlou', '7b982fa3f2e2605bf6138dbfb5f5c1340700eb9d', 'Valentin.7887@uzefz.fr', NULL, '2025-03-06', 1, '2025-03-04 22:15:19'),
-(26, 'Mavrokai', 'Valentin Verscheure', '7b982fa3f2e2605bf6138dbfb5f5c1340700eb9d', 'valentin.verscheure@epitech.eu', NULL, '1998-09-15', 1, '2025-03-05 15:06:33');
+(26, 'Mavrokai', 'Valentin Verscheure', '7b982fa3f2e2605bf6138dbfb5f5c1340700eb9d', 'valentin.verscheure@epitech.eu', 'coucou tout le monde :!!!!', '1998-09-15', 1, '2025-03-05 15:06:33'),
+(27, 'Kakahuéte', 'kahina lahouazi', '7b982fa3f2e2605bf6138dbfb5f5c1340700eb9d', 'kahina.lahouazi@epitech.eu', 'zeufhzeifjzefjzeofjez', '2000-06-19', 1, '2025-03-05 20:58:38');
 
 --
 -- Index pour les tables déchargées
@@ -281,37 +311,37 @@ ALTER TABLE `Users`
 -- AUTO_INCREMENT pour la table `Hashtags`
 --
 ALTER TABLE `Hashtags`
-  MODIFY `hashtag_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `hashtag_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT pour la table `Media`
 --
 ALTER TABLE `Media`
-  MODIFY `media_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `media_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT pour la table `Messages`
 --
 ALTER TABLE `Messages`
-  MODIFY `message_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `message_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT pour la table `Posts`
 --
 ALTER TABLE `Posts`
-  MODIFY `post_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `post_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT pour la table `Themes`
 --
 ALTER TABLE `Themes`
-  MODIFY `theme_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `theme_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT pour la table `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- Contraintes pour les tables déchargées
@@ -329,7 +359,7 @@ ALTER TABLE `Follows`
 --
 ALTER TABLE `MessageMedia`
   ADD CONSTRAINT `MessageMedia_ibfk_1` FOREIGN KEY (`message_id`) REFERENCES `Messages` (`message_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `MessageMedia_ibfk_2` FOREIGN KEY (`media_id`) REFERENCES `Media` (`media_id`);
+  ADD CONSTRAINT `MessageMedia_ibfk_2` FOREIGN KEY (`media_id`) REFERENCES `Media` (`media_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `Messages`

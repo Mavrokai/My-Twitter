@@ -1,5 +1,13 @@
 <?php
-include_once __DIR__ . '../../config/config.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+if (!isset($_SESSION)) {
+    session_start();
+}
+
+include_once __DIR__ . '/../config/config.php';
 
 
 function getFollowingCount($pdo, $user_id)
@@ -9,6 +17,8 @@ function getFollowingCount($pdo, $user_id)
     $stmt->execute([$user_id]);
     return $stmt->fetchColumn();
 }
+
+
 
 
 function getFollowersCount($pdo, $user_id)
@@ -22,22 +32,29 @@ function getFollowersCount($pdo, $user_id)
 
 
 
-function getRandomUsers($pdo, $currentUserId, $limit = 7) {
+
+
+function getRandomUsers($pdo, $currentUserId, $limit = 7)
+{
     $query = "SELECT u.user_id, u.username, u.display_name, 
               (EXISTS(SELECT 1 FROM Follows WHERE follower_id = ? AND following_id = u.user_id)) AS is_following
               FROM Users u
               WHERE u.user_id != ?
               ORDER BY RAND()
               LIMIT ?";
-    
-    $stmt = $pdo->prepare($query);
-    
 
-    // On bind explicitement les paramètres avec leurs types
-    $stmt->bindParam(1, $currentUserId, PDO::PARAM_INT);
-    $stmt->bindParam(2, $currentUserId, PDO::PARAM_INT);
-    $stmt->bindParam(3, $limit, PDO::PARAM_INT);
-    
+    $stmt = $pdo->prepare($query);
+
+
+// 1. L'ID de l'utilisateur actuel pour vérifier les suivis
+$stmt->bindParam(1, $currentUserId, PDO::PARAM_INT);
+
+// 2. L'ID de l'utilisateur actuel pour exclure les résultats
+$stmt->bindParam(2, $currentUserId, PDO::PARAM_INT);
+
+// 3. La limite de résultats à afficher
+$stmt->bindParam(3, $limit, PDO::PARAM_INT);
+
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -57,6 +74,7 @@ function toggleFollow($pdo, $followerId, $followingId)
 
 
 
+
     if ($checkStmt->rowCount() > 0) {
         // Supprime le follow
         $deleteQuery = "DELETE FROM Follows WHERE follower_id = ? AND following_id = ?";
@@ -64,6 +82,7 @@ function toggleFollow($pdo, $followerId, $followingId)
         $deleteStmt->execute([$followerId, $followingId]);
         return 'unfollowed';
     } else {
+
 
 
         // Ajoute le follow

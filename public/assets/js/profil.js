@@ -62,10 +62,36 @@ document.addEventListener("DOMContentLoaded", function () {
         openModalBtn.addEventListener("click", openModal);
         closeModalBtn.addEventListener("click", closeModal);
         window.addEventListener("click", outsideClick);
+
+
+        // Ajouter la gestion du compteur
+        const tweetContent = document.getElementById('tweetContent');
+        const charCount = document.getElementById('charCount');
+
+        if (tweetContent && charCount) {
+            tweetContent.addEventListener('input', updateCharCount);
+
+            // Initialiser au chargement
+            updateCharCount();
+
+        }
     }
 
 
 
+    function updateCharCount() {
+        const remaining = 140 - tweetContent.value.length;
+        charCount.textContent = remaining;
+        
+        // Changement de couleur si nécessaire
+        if (remaining < 20) {
+            charCount.classList.add('text-red-500');
+        } else {
+            charCount.classList.remove('text-red-500');
+        }
+    }
+
+    
 
 
     // Preview d'image pour le tweet
