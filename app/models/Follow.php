@@ -46,14 +46,14 @@ function getRandomUsers($pdo, $currentUserId, $limit = 7)
     $stmt = $pdo->prepare($query);
 
 
-// 1. L'ID de l'utilisateur actuel pour vérifier les suivis
-$stmt->bindParam(1, $currentUserId, PDO::PARAM_INT);
+    // 1. L'ID de l'utilisateur actuel pour vérifier les suivis
+    $stmt->bindParam(1, $currentUserId, PDO::PARAM_INT);
 
-// 2. L'ID de l'utilisateur actuel pour exclure les résultats
-$stmt->bindParam(2, $currentUserId, PDO::PARAM_INT);
+    // 2. L'ID de l'utilisateur actuel pour exclure les résultats
+    $stmt->bindParam(2, $currentUserId, PDO::PARAM_INT);
 
-// 3. La limite de résultats à afficher
-$stmt->bindParam(3, $limit, PDO::PARAM_INT);
+    // 3. La limite de résultats à afficher
+    $stmt->bindParam(3, $limit, PDO::PARAM_INT);
 
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -91,4 +91,27 @@ function toggleFollow($pdo, $followerId, $followingId)
         $insertStmt->execute([$followerId, $followingId]);
         return 'followed';
     }
+}
+
+
+function getFollowersList($pdo, $userId) {
+    $sql = "SELECT u.user_id, u.username, u.display_name, u.avatar_url as avatar,
+            EXISTS(SELECT 1 FROM Follows WHERE follower_id = ? AND following_id = u.user_id) as is_following
+            FROM Follows 
+            JOIN Users u ON follower_id = u.user_id 
+            WHERE following_id = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$_SESSION['user_id'], $userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getFollowingList($pdo, $userId) {
+    $sql = "SELECT u.user_id, u.username, u.display_name, u.avatar_url as avatar,
+            EXISTS(SELECT 1 FROM Follows WHERE follower_id = ? AND following_id = u.user_id) as is_following
+            FROM Follows 
+            JOIN Users u ON following_id = u.user_id 
+            WHERE follower_id = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$_SESSION['user_id'], $userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }

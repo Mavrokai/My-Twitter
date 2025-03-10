@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateCharCount() {
         const remaining = 140 - tweetContent.value.length;
         charCount.textContent = remaining;
-        
+
         // Changement de couleur si nécessaire
         if (remaining < 20) {
             charCount.classList.add('text-red-500');
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    
+
 
 
     // Preview d'image pour le tweet
@@ -172,8 +172,36 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function modalpreviewsFollowsFollower() {
+        const following = document.getElementById('following-counter');
+        const followers = document.getElementById('followers-counter');
+
+        following.addEventListener('click', function () {
+            const modal = document.getElementById('editProfileModal');
+
+            if (modal.style = 'display: none;') {
+                modal.style = 'display: block;';
+            } else {
+                modal.style = 'display: none;';
+            }
+        })
+
+
+        followers.addEventListener('click', function () {
+            const modal = document.getElementById('editProfileModal');
+
+            if (modal.style = 'display: none;') {
+                modal.style = 'display: block;';
+            } else {
+                modal.style = 'display: none;';
+            }
+        })
+
+    }
+
 
     function init() {
+        modalpreviewsFollowsFollower();
         handleLikeButtons();
         handleEditProfileModal();
         handlePostModal();

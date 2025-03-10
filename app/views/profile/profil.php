@@ -51,11 +51,11 @@ include __DIR__ . '/../../controllers/TweetController.php';
                     </p>
                 </div>
                 <div class="flex mt-2 space-x-4 text-sm">
-                    <span class="flex items-center space-x-1 hover:text-[#59713E] transition-colors duration-200 cursor-default">
+                    <span id="following-counter" class="flex items-center space-x-1 hover:text-[#59713E] transition-colors duration-200 cursor-default">
                         <span id="following-count" class="font-semibold text-gray-800"><?= $following_count ?></span>
                         <span class="text-gray-600">Suivis</span>
                     </span>
-                    <span class="flex items-center space-x-1 hover:text-[#59713E] transition-colors duration-200 cursor-default">
+                    <span id="followers-counter" class="flex items-center space-x-1 hover:text-[#59713E] transition-colors duration-200 cursor-default">
                         <span id="followers-count" class="font-semibold text-gray-800"><?= $followers_count ?></span>
                         <span class="text-gray-600">Abonnés</span>
                     </span>
@@ -101,6 +101,18 @@ include __DIR__ . '/../../controllers/TweetController.php';
                 </div>
             </div>
         <?php endif; ?>
+
+
+        <!-- Modal Followers/Following -->
+        <div id="followModal" class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
+                <h3 id="modalTitle" class="text-lg font-semibold mb-4"></h3>
+                <div id="modalContent" class="space-y-2">
+                    <!-- Les utilisateurs seront chargés ici -->
+                </div>
+                <button id="closeFollowModal" class="mt-4 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Fermer</button>
+            </div>
+        </div>
 
 
         <!-- Messages flash -->
