@@ -98,6 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 $randomUsers = getRandomUsers($pdo, (int)$_SESSION['user_id'], 7);
 $following_count = getFollowingCount($pdo, $target_user_id);
 $followers_count = getFollowersCount($pdo, $target_user_id);
+$followers_list = getFollowersList($pdo, $target_user_id);
+$following_list = getFollowingList($pdo, $target_user_id);
 $user_posts = get_user_posts($target_user_id);
 
 

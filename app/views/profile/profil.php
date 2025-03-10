@@ -51,11 +51,11 @@ include __DIR__ . '/../../controllers/TweetController.php';
                     </p>
                 </div>
                 <div class="flex mt-2 space-x-4 text-sm">
-                    <span id="following-counter" class="flex items-center space-x-1 hover:text-[#59713E] transition-colors duration-200 cursor-default">
+                    <span id="following-counter" class="flex items-center space-x-1 hover:text-[#59713E] transition-colors duration-200 cursor-pointer">
                         <span id="following-count" class="font-semibold text-gray-800"><?= $following_count ?></span>
                         <span class="text-gray-600">Suivis</span>
                     </span>
-                    <span id="followers-counter" class="flex items-center space-x-1 hover:text-[#59713E] transition-colors duration-200 cursor-default">
+                    <span id="followers-counter" class="flex items-center space-x-1 hover:text-[#59713E] transition-colors duration-200 cursor-pointer">
                         <span id="followers-count" class="font-semibold text-gray-800"><?= $followers_count ?></span>
                         <span class="text-gray-600">Abonnés</span>
                     </span>
@@ -103,14 +103,37 @@ include __DIR__ . '/../../controllers/TweetController.php';
         <?php endif; ?>
 
 
-        <!-- Modal Followers/Following -->
-        <div id="followModal" class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-            <div class="bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
-                <h3 id="modalTitle" class="text-lg font-semibold mb-4"></h3>
-                <div id="modalContent" class="space-y-2">
-                    <!-- Les utilisateurs seront chargés ici -->
+        <!-- Modal pour afficher les Abonnés / Suivis -->
+        <div id="followModal" class="fixed z-50 inset-0 backdrop-filter backdrop-blur-md pt-[25vh] pl-[75vh] justify-center items-center hidden bg-opacity-50">
+            <div class="bg-white rounded-lg shadow-lg p-4 relative w-80">
+                <h2 id="modalTitle" class="text-lg font-bold mb-4"></h2>
+                <button id="closeFollowModal" class="absolute top-2 right-2 text-xl">&times;</button>
+                <div id="followersList" class="hidden">
+                    <?php foreach ($followers_list as $follower): ?>
+                        <a href="./profil.php?username=<?= htmlspecialchars($follower['username']) ?>" class="block hover:bg-gray-100 p-2">
+                            <div class="flex items-center space-x-2">
+                                <img src="https://i.pinimg.com/736x/72/f7/3e/72f73e03e134d091171fc0ff0d3fe5b8.jpg" class="w-8 h-8 rounded-full">
+                                <div>
+                                    <span class="font-medium"><?= htmlspecialchars($follower['display_name']) ?></span>
+                                    <p class="text-gray-500 text-sm">@<?= htmlspecialchars($follower['username']) ?></p>
+                                </div>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
                 </div>
-                <button id="closeFollowModal" class="mt-4 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Fermer</button>
+                <div id="followingList" class="hidden">
+                    <?php foreach ($following_list as $following): ?>
+                        <a href="./profil.php?username=<?= htmlspecialchars($following['username']) ?>" class="block hover:bg-gray-100 p-2">
+                            <div class="flex items-center space-x-2">
+                                <img src="https://i.pinimg.com/736x/72/f7/3e/72f73e03e134d091171fc0ff0d3fe5b8.jpg" class="w-8 h-8 rounded-full">
+                                <div>
+                                    <span class="font-medium"><?= htmlspecialchars($following['display_name']) ?></span>
+                                    <p class="text-gray-500 text-sm">@<?= htmlspecialchars($following['username']) ?></p>
+                                </div>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
 

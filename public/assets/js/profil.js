@@ -172,36 +172,45 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function modalpreviewsFollowsFollower() {
-        const following = document.getElementById('following-counter');
-        const followers = document.getElementById('followers-counter');
-
-        following.addEventListener('click', function () {
-            const modal = document.getElementById('editProfileModal');
-
-            if (modal.style = 'display: none;') {
-                modal.style = 'display: block;';
-            } else {
-                modal.style = 'display: none;';
+    function handleFollowModal() {
+        const followersCounter = document.getElementById('followers-counter');
+        const followingCounter = document.getElementById('following-counter');
+        const followModal = document.getElementById('followModal');
+        const closeFollowModal = document.getElementById('closeFollowModal');
+        const followersList = document.getElementById('followersList');
+        const followingList = document.getElementById('followingList');
+        const modalTitle = document.getElementById('modalTitle');
+    
+        if (!followersCounter || !followingCounter || !followModal || !closeFollowModal || !modalTitle) return;
+    
+        followersCounter.addEventListener('click', () => {
+            modalTitle.textContent = 'Abonnés';
+            followersList.classList.remove('hidden');
+            followingList.classList.add('hidden');
+            followModal.classList.remove('hidden');
+        });
+    
+        followingCounter.addEventListener('click', () => {
+            modalTitle.textContent = 'Suivis';
+            followingList.classList.remove('hidden');
+            followersList.classList.add('hidden');
+            followModal.classList.remove('hidden');
+        });
+    
+        closeFollowModal.addEventListener('click', () => {
+            followModal.classList.add('hidden');
+        });
+    
+        window.addEventListener('click', (e) => {
+            if (e.target === followModal) {
+                followModal.classList.add('hidden');
             }
-        })
-
-
-        followers.addEventListener('click', function () {
-            const modal = document.getElementById('editProfileModal');
-
-            if (modal.style = 'display: none;') {
-                modal.style = 'display: block;';
-            } else {
-                modal.style = 'display: none;';
-            }
-        })
-
+        });
     }
 
 
     function init() {
-        modalpreviewsFollowsFollower();
+        handleFollowModal();
         handleLikeButtons();
         handleEditProfileModal();
         handlePostModal();

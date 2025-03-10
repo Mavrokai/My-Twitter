@@ -9,7 +9,10 @@ if (!isset($_SESSION)) {
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../models/Tweet.php';
 
-
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../auth/auth.php');
+    exit;
+}
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

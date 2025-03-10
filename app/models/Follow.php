@@ -94,24 +94,26 @@ function toggleFollow($pdo, $followerId, $followingId)
 }
 
 
-function getFollowersList($pdo, $userId) {
-    $sql = "SELECT u.user_id, u.username, u.display_name, u.avatar_url as avatar,
-            EXISTS(SELECT 1 FROM Follows WHERE follower_id = ? AND following_id = u.user_id) as is_following
-            FROM Follows 
-            JOIN Users u ON follower_id = u.user_id 
-            WHERE following_id = ?";
+function getFollowersList($pdo, $userId)
+{
+    $sql = "SELECT u.user_id, u.username, u.display_name 
+            FROM Follows f 
+            JOIN Users u ON f.follower_id = u.user_id 
+            WHERE f.following_id = ?";
+    
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$_SESSION['user_id'], $userId]);
+    $stmt->execute([$userId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function getFollowingList($pdo, $userId) {
-    $sql = "SELECT u.user_id, u.username, u.display_name, u.avatar_url as avatar,
-            EXISTS(SELECT 1 FROM Follows WHERE follower_id = ? AND following_id = u.user_id) as is_following
-            FROM Follows 
-            JOIN Users u ON following_id = u.user_id 
-            WHERE follower_id = ?";
+function getFollowingList($pdo, $userId)
+{
+    $sql = "SELECT u.user_id, u.username, u.display_name 
+            FROM Follows f 
+            JOIN Users u ON f.following_id = u.user_id 
+            WHERE f.follower_id = ?";
+    
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$_SESSION['user_id'], $userId]);
+    $stmt->execute([$userId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
