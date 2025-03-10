@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         return data.map(hashtag => `
-            <a href="/app/views/tag/tag.php?tag=${hashtag.tag.substring(1)}" 
+            <a href="/app/views/tag/tag.php?tag=${hashtag.tag}" 
                 class="flex items-center p-3 hover:bg-gray-100 transition-colors">
                 <div class="text-blue-500 mr-2">#</div>
                 <div>
