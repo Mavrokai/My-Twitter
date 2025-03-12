@@ -180,33 +180,74 @@ document.addEventListener("DOMContentLoaded", function () {
         const followersList = document.getElementById('followersList');
         const followingList = document.getElementById('followingList');
         const modalTitle = document.getElementById('modalTitle');
-    
+
         if (!followersCounter || !followingCounter || !followModal || !closeFollowModal || !modalTitle) return;
-    
+
         followersCounter.addEventListener('click', () => {
             modalTitle.textContent = 'Abonnés';
             followersList.classList.remove('hidden');
             followingList.classList.add('hidden');
             followModal.classList.remove('hidden');
         });
-    
+
         followingCounter.addEventListener('click', () => {
             modalTitle.textContent = 'Suivis';
             followingList.classList.remove('hidden');
             followersList.classList.add('hidden');
             followModal.classList.remove('hidden');
         });
-    
+
         closeFollowModal.addEventListener('click', () => {
             followModal.classList.add('hidden');
         });
-    
+
         window.addEventListener('click', (e) => {
             if (e.target === followModal) {
                 followModal.classList.add('hidden');
             }
         });
     }
+
+
+
+    document.addEventListener('click', (e) => {
+
+
+        if (e.target.classList.contains('reply-btn')) {
+            const postId = e.target.dataset.postId;
+            const username = e.target.dataset.username;
+            const form = e.target.closest('.flex-1').querySelector('.reply-form');
+            const textarea = form.querySelector('textarea');
+
+            form.classList.remove('hidden');
+            textarea.focus();
+            textarea.value = `@${username} `;
+        }
+
+
+        if (e.target.classList.contains('cancel-reply')) {
+            const form = e.target.closest('.reply-form');
+            form.classList.add('hidden');
+            form.querySelector('textarea').value = '';
+        }
+    });
+
+
+    document.querySelectorAll('.reply-form textarea').forEach(textarea => {
+        textarea.addEventListener('input', function (e) {
+            const match = this.value.match(/@(\w*)$/);
+            if (match) {
+                const query = match[1];
+                fetch(`../../controllers/recherche-users.php?query=${query}`)
+                    .then(response => response.json())
+                    .then(users => {
+
+                        console.log('Suggestions:', users);
+                    });
+            }
+        });
+    });
+
 
 
     function init() {

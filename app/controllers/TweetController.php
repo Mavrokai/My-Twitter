@@ -9,21 +9,15 @@ if (!isset($_SESSION)) {
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../models/Tweet.php';
 
-
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = trim($_POST['content'] ?? '');
+    $reply_to = $_POST['reply_to'] ?? null;
     $error = null;
-
-
 
 
     if (empty($content)) {
         $error = "Le contenu ne peut pas être vide";
     }
-
-
 
 
     $media_path = null;
@@ -38,24 +32,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-$user_id = $_SESSION['user_id'];
-
-
-if (empty($error)) {
-        $success = create_post($user_id, $content, $media_path);
+    if (empty($error)) {
+        $user_id = $_SESSION['user_id'];
+        $success = create_post($user_id, $content, $media_path, $reply_to);
 
         if ($success) {
-            header('Location: ../views/profile/profil.php');
+            $_SESSION['success'] = $reply_to ? 
+                "Réponse publiée avec succès" : 
+                "Tweet publié avec succès";
+            
+
+                $redirect = $reply_to ? 
+
+
+                // Reste sur la même page pour les réponses
+                $_SERVER['HTTP_REFERER'] :
+                '../views/profile/profil.php';
+            
+            header("Location: $redirect");
             exit;
         }
-        $error = "Erreur lors de la création du post";
+        $error = "Erreur lors de la publication";
     }
 
     $_SESSION['error'] = $error;
-    header('Location: ../views/profile/profil.php');
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
 
 
-
-$posts = get_user_posts($_SESSION['user_id'] ?? 0) ?? [];
+if (isset($_SESSION['user_id'])) {
+    $posts = get_user_posts($_SESSION['user_id']) ?? [];
+}

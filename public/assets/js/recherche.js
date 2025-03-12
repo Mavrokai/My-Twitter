@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(data.error || `HTTP error! status: ${response.status}`);
             }
 
-            // Validation renforcée
+
             if (!Array.isArray(data)) {
                 console.warn('Réponse non-array:', data);
                 return [];

@@ -172,23 +172,35 @@ include __DIR__ . '/../../controllers/TweetController.php';
 
             <!-- Posts Section -->
             <?php foreach ($user_posts as $post): ?>
-                <div class="bg-[#f8f7f776] p-4 rounded-lg shadow-md border border-gray-300 mb-4">
+                <div class="bg-[#f8f7f776] p-4 rounded-lg shadow-md border border-gray-300 mb-4" data-post-id="<?= $post['post_id'] ?>">
                     <div class="flex items-start space-x-3">
+                        <!-- Avatar -->
                         <img src="https://i.pinimg.com/736x/72/f7/3e/72f73e03e134d091171fc0ff0d3fe5b8.jpg"
                             class="w-12 h-12 rounded-full border-2 border-white">
+
                         <div class="flex-1">
+                            <!-- En-tête avec infos utilisateur -->
                             <div class="flex items-center space-x-2">
-                                <span class="font-semibold"><?= htmlspecialchars($profile_display_name) ?></span>
-                                <span class="text-gray-600">@<?= htmlspecialchars($profile_username) ?></span>
-                                <span class="text-gray-500 text-sm">• <?= date('d/m/Y H:i', strtotime($post['created_at'])) ?></span>
+                                <?php if ($post['is_retweet']): ?>
+                                    <span class="text-gray-500 text-sm">
+                                        🔁 Retweeté par <?= htmlspecialchars($profile_display_name) ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="font-semibold"><?= htmlspecialchars($post['display_name']) ?></span>
+                                    <span class="text-gray-600">@<?= htmlspecialchars($post['username']) ?></span>
+                                <?php endif; ?>
+
+                                <span class="text-gray-500 text-sm">
+                                    • <?= date('d/m/Y H:i', strtotime($post['display_date'])) ?>
+                                </span>
                             </div>
 
-                            <!-- Contenu du tweet avec URL courte -->
+                            <!-- Contenu du tweet -->
                             <p class="mt-3 text-black">
                                 <?= processContent($post['content']) ?>
                             </p>
 
-                            <!-- Affichage des images avec leur URL courte -->
+                            <!-- Affichage des médias -->
                             <?php if (!empty($post['media_data'])): ?>
                                 <div class="mt-3 flex flex-wrap gap-2">
                                     <?php foreach (explode('||', $post['media_data']) as $media):
@@ -202,9 +214,65 @@ include __DIR__ . '/../../controllers/TweetController.php';
                                 </div>
                             <?php endif; ?>
 
-                            <button class="like-btn flex items-center space-x-1 bg-gray-200 text-gray-800 px-3 py-1 rounded-md shadow hover:bg-gray-300 transition mt-2">
-                                ❤️ <span class="like-count">0</span>
-                            </button>
+                            <!-- Boutons d'interaction -->
+                            <div class="flex space-x-2 mt-2">
+                                <button class="like-btn flex items-center space-x-1 bg-gray-200 text-gray-800 px-3 py-1 rounded-md shadow hover:bg-gray-300">
+                                    ❤️ <span class="like-count">0</span>
+                                </button>
+
+                                <?php if (!$is_owner && !$post['is_retweet']): ?>
+                                    <button class="retweet-btn bg-gray-200 px-3 py-1 rounded-md hover:bg-gray-300 transition-colors"
+                                        data-post-id="<?= $post['post_id'] ?>"
+                                        <?= $post['is_retweeted'] ? 'disabled' : '' ?>>
+                                        <?= $post['is_retweeted'] ? 'Retweeté' : '🔁 Retweeter' ?>
+                                    </button>
+                                <?php endif; ?>
+
+                                <button class="reply-btn bg-gray-200 px-3 py-1 rounded-md hover:bg-gray-300"
+                                    data-post-id="<?= $post['post_id'] ?>"
+                                    data-username="<?= htmlspecialchars($post['username']) ?>">
+                                    💬 Répondre
+                                </button>
+                            </div>
+
+                            <!-- Formulaire de réponse -->
+                            <form class="reply-form hidden mt-3" action="../../controllers/TweetController.php" method="POST">
+                                <input type="hidden" name="reply_to" value="<?= $post['post_id'] ?>">
+                                <div class="relative">
+                                    <textarea
+                                        name="content"
+                                        class="w-full p-2 border border-gray-300 rounded"
+                                        placeholder="Répondre à @<?= htmlspecialchars($post['username']) ?>..."
+                                        maxlength="140"
+                                        required></textarea>
+                                </div>
+                                <div class="flex justify-end space-x-2 mt-2">
+                                    <button type="button" class="cancel-reply bg-gray-300 px-3 py-1 rounded-md hover:bg-gray-400">
+                                        Annuler
+                                    </button>
+                                    <button type="submit" class="bg-[#59713E] text-white px-3 py-1 rounded-md hover:bg-green-700">
+                                        Répondre
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Réponses -->
+                            <?php if (!empty($post['replies'])): ?>
+                                <div class="ml-8 mt-4 space-y-4 border-l-2 border-gray-200 pl-4">
+                                    <?php foreach ($post['replies'] as $reply): ?>
+                                        <div class="bg-[#f0f0f0] p-3 rounded-lg">
+                                            <div class="flex items-center space-x-2 text-sm">
+                                                <span class="font-semibold"><?= htmlspecialchars($reply['display_name']) ?></span>
+                                                <span class="text-gray-600">@<?= htmlspecialchars($reply['username']) ?></span>
+                                                <span class="text-gray-500">• <?= date('d/m/Y H:i', strtotime($reply['created_at'])) ?></span>
+                                            </div>
+                                            <p class="mt-2 text-black">
+                                                <?= processContent($reply['content']) ?>
+                                            </p>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

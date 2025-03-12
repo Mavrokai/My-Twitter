@@ -99,10 +99,10 @@ function getFollowersList($pdo, $userId)
     $sql = "SELECT u.user_id, u.username, u.display_name 
             FROM Follows f 
             JOIN Users u ON f.follower_id = u.user_id 
-            WHERE f.following_id = ?"; // 1 paramètre attendu
+            WHERE f.following_id = ?";
     
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$userId]); // On passe seulement le $userId
+    $stmt->execute([$userId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -111,9 +111,9 @@ function getFollowingList($pdo, $userId)
     $sql = "SELECT u.user_id, u.username, u.display_name 
             FROM Follows f 
             JOIN Users u ON f.following_id = u.user_id 
-            WHERE f.follower_id = ?"; // 1 paramètre attendu
+            WHERE f.follower_id = ?";
     
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$userId]); // On passe seulement le $userId
+    $stmt->execute([$userId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }

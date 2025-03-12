@@ -22,9 +22,10 @@ if (!isset($_SESSION['user_id'])) {
 
 $hashtag = isset($_GET['tag']) ? trim($_GET['tag']) : '';
 
-// hashtag.php
+
 if (!empty($hashtag)) {
-    // Nettoie le hashtag en retirant le '#' et convertit en minuscules
+
+    // Convertit en tout en minuscules et retire le # dans la variable
     $hashtag_clean = strtolower(ltrim($hashtag, '#'));
     
     // Cherche les posts avec le hashtag nettoyé
