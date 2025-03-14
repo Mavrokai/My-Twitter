@@ -1,7 +1,7 @@
 <?php
 
-$items = ['Accueil', 'Explorer', 'Notifications', 'Messages', 'Suivi', 'Emplois', 'Communautés', 'Abonnement', 'Entreprise vé...', 'Profil', 'Plus'];
-$links = ['#', '#', '../notifs/notifications.php', '../msg/messagerie.php', '#', '#', '#', '#', '#', '../profile/profil.php', '#'];
+$items = ['Accueil', 'Notifications', 'Profil', 'Plus'];
+$links = ['#', '../notifs/notifications.php', '../profile/profil.php', '#'];
 
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>

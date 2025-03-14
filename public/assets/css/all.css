@@ -463,6 +463,9 @@
   .m-0 {
     margin: calc(var(--spacing) * 0);
   }
+  .m-9 {
+    margin: calc(var(--spacing) * 9);
+  }
   .m-\[-5rem_0_3rem\] {
     margin: -5rem 0 3rem;
   }
