@@ -248,9 +248,43 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    function handleRetweetButtons() {
+        document.querySelectorAll('.retweet-btn').forEach(button => {
+            button.addEventListener('click', async function (e) {
+                e.preventDefault();
+                const postId = this.dataset.postId;
+
+                try {
+                    const response = await fetch('../../controllers/RetweetController.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ post_id: postId })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.textContent = 'Retweeté';
+                        this.disabled = true;
+
+                    } else {
+                        alert('Erreur: ' + result.error);
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                }
+            });
+        });
+    }
+
+
+    
 
 
     function init() {
+        handleRetweetButtons();
         handleFollowModal();
         handleLikeButtons();
         handleEditProfileModal();

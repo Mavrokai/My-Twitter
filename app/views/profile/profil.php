@@ -25,6 +25,8 @@ include __DIR__ . '/../../controllers/TweetController.php';
     <!-- Sidebar Gauche -->
     <?php include '../partials/sidebar.php'; ?>
 
+    
+
     <!-- Contenu Central Scrollable -->
     <main class="w-full md:w-[55%] h-screen overflow-y-none p-4 mx-auto text-sm">
         <div class="relative bg-[#f8f7f776] rounded-lg shadow p-3">

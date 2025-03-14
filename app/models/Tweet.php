@@ -20,7 +20,7 @@ function get_user_posts($user_id, $current_user_id = null)
             u.display_name,
             COALESCE(MAX(rp.created_at), p.created_at) AS display_date,
             GROUP_CONCAT(DISTINCT CONCAT(m.file_name, '|SHORT|', m.short_url) SEPARATOR '||') AS media_data,
-            MAX(CASE WHEN rp.user_id IS NOT NULL THEN 1 ELSE 0 END) AS is_retweet,
+            MAX(CASE WHEN rp.user_id = :user_id THEN 1 ELSE 0 END) AS is_retweet,
             GROUP_CONCAT(DISTINCT rp.user_id) AS retweeters,
             MAX(EXISTS(SELECT 1 FROM Reposts WHERE post_id = p.post_id AND user_id = :current_user)) AS is_retweeted,
             COALESCE(
@@ -166,7 +166,7 @@ function retweet_post($user_id, $post_id)
             return ['success' => false, 'error' => 'Déjà retweeté'];
         }
 
-        
+
         // Insère le retweet
         $stmt = $pdo->prepare("INSERT INTO Reposts (post_id, user_id) VALUES (?, ?)");
         $stmt->execute([$post_id, $user_id]);
