@@ -87,7 +87,7 @@ if (isset($_GET['action'])) {
                     $_SESSION['email'] = $user['email'];
 
 
-                    header("Location: ../views/profile/profil.php");
+                    header("Location: ../views/home/home.php");
                     exit();
                 } else {
                     header("Location: /views/auth/auth.php?error=Mot de passe incorrect");

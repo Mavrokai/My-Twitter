@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             form.classList.remove('hidden');
             textarea.focus();
-            textarea.value = `@${username} `;
+            textarea.value = `@${username}`;
         }
 
 

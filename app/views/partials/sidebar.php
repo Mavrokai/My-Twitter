@@ -1,7 +1,7 @@
 <?php
 
 $items = ['Accueil', 'Notifications', 'Profil', 'Plus'];
-$links = ['#', '../notifs/notifications.php', '../profile/profil.php', '#'];
+$links = ['../home/home.php', '../notifs/notifications.php', '../profile/profil.php', '#'];
 
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>

@@ -8,6 +8,101 @@ if (!isset($_SESSION)) {
 }
 
 
+function get_timeline_posts($current_user_id)
+{
+    global $pdo;
+
+    $query = "
+        (SELECT 
+            p.post_id,
+            p.content,
+            p.created_at,
+            u.user_id AS original_user_id,
+            u.username AS original_username,
+            u.display_name AS original_display_name,
+            NULL AS retweeter_id,
+            NULL AS retweeter_username,
+            NULL AS retweeter_display_name,
+            p.created_at AS display_date,
+            GROUP_CONCAT(DISTINCT CONCAT(m.file_name, '|SHORT|', m.short_url) SEPARATOR '||') AS media_data,
+            0 AS is_retweet,
+            COALESCE(
+                (SELECT JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'post_id', r.post_id,
+                        'content', r.content,
+                        'created_at', r.created_at,
+                        'username', ru.username,
+                        'display_name', ru.display_name
+                    )
+                )
+                FROM Posts r
+                JOIN Users ru ON r.user_id = ru.user_id
+                WHERE r.reply_to = p.post_id),
+                JSON_ARRAY()
+            ) AS replies
+        FROM Posts p
+        JOIN Users u ON p.user_id = u.user_id
+        LEFT JOIN PostMedia pm ON p.post_id = pm.post_id
+        LEFT JOIN Media m ON pm.media_id = m.media_id
+        WHERE p.user_id IN (SELECT following_id FROM Follows WHERE follower_id = :current_user_id)
+            OR p.user_id = :current_user_id
+        GROUP BY p.post_id)
+        
+        UNION ALL
+        
+        (SELECT 
+            p.post_id,
+            p.content,
+            rp.created_at,
+            u.user_id AS original_user_id,
+            u.username AS original_username,
+            u.display_name AS original_display_name,
+            rp.user_id AS retweeter_id,
+            retweeter.username AS retweeter_username,
+            retweeter.display_name AS retweeter_display_name,
+            rp.created_at AS display_date,
+            GROUP_CONCAT(DISTINCT CONCAT(m.file_name, '|SHORT|', m.short_url) SEPARATOR '||') AS media_data,
+            1 AS is_retweet,
+            COALESCE(
+                (SELECT JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'post_id', r.post_id,
+                        'content', r.content,
+                        'created_at', r.created_at,
+                        'username', ru.username,
+                        'display_name', ru.display_name
+                    )
+                )
+                FROM Posts r
+                JOIN Users ru ON r.user_id = ru.user_id
+                WHERE r.reply_to = p.post_id),
+                JSON_ARRAY()
+            ) AS replies
+        FROM Reposts rp
+        JOIN Posts p ON rp.post_id = p.post_id
+        JOIN Users u ON p.user_id = u.user_id
+        JOIN Users retweeter ON rp.user_id = retweeter.user_id
+        LEFT JOIN PostMedia pm ON p.post_id = pm.post_id
+        LEFT JOIN Media m ON pm.media_id = m.media_id
+        WHERE rp.user_id IN (SELECT following_id FROM Follows WHERE follower_id = :current_user_id)
+            OR rp.user_id = :current_user_id
+        GROUP BY rp.post_id, rp.user_id)
+        
+        ORDER BY display_date DESC
+    ";
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute([':current_user_id' => $current_user_id]);
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($posts as &$post) {
+        $post['replies'] = json_decode($post['replies'] ?? '[]', true);
+    }
+
+    return $posts;
+}
+
 function get_user_posts($user_id, $current_user_id = null)
 {
     global $pdo;
