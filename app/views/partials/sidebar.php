@@ -1,7 +1,6 @@
 <?php
-$items = ['Accueil', 'Explorer', 'Notifications', 'Messages', 'Suivi', 'Emplois', 'Communautés', 'Abonnement', 'Entreprise vé...', 'Profil', 'Plus'];
-$links = ['#', '#', '../notifs/notifications.php', '../msg/messagerie.php', '#', '#', '#', '#', '#', '../profile/profil.php', '#'];
-
+$items = ['Accueil', 'Profil', 'Plus'];
+$links = ['../home/home.php', '../profile/profil.php', '#'];
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 
@@ -14,20 +13,39 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
 
         <?php foreach ($items as $key => $item): ?>
-            <?php
-
-            $link_basename = basename($links[$key]);
-            ?>
-            <div class="flex items-center space-x-3 p-2 rounded-full hover:bg-blue-50 <?= ($link_basename === $current_page) ? 'bg-blue-100 font-semibold' : '' ?> hover:cursor-pointer">
-                <a href="<?= $links[$key] ?>" class="text-gray-950">
-                    <?= $item ?>
+            <?php $link_basename = basename($links[$key]); ?>
+            <?php if ($item === 'Plus'): ?>
+                <div class="relative">
+                    <!-- Bouton pour ouvrir le dropdown -->
+                    <div id="dropdownToggle" class="flex items-center space-x-3 p-2 rounded-full hover:bg-blue-50 cursor-pointer">
+                        <span class="text-gray-950"><?= $item ?></span>
+                    </div>
+                    <!-- Menu déroulant caché par défaut -->
+                    <div id="dropdownMenu" class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg hidden">
+                        <a href="../../config/logout.php" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                            Déconnexion
+                        </a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="<?= $links[$key] ?>" class="block">
+                    <div class="flex items-center space-x-3 p-2 rounded-full hover:bg-blue-50 <?= ($link_basename === $current_page) ? 'bg-blue-100 font-semibold' : '' ?> hover:cursor-pointer">
+                        <span class="text-gray-950"><?= $item ?></span>
+                    </div>
                 </a>
-            </div>
+            <?php endif; ?>
         <?php endforeach; ?>
     </div>
 
     <div class="flex items-center space-x-2 text-gray-500 text-sm">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">...</svg>
-        <span>Utilisateurs</span>
+        <span><?php echo $_SESSION['username'] ?></span>
     </div>
 </div>
+
+<script>
+    document.getElementById('dropdownToggle').addEventListener('click', function() {
+        var dropdown = document.getElementById('dropdownMenu');
+        dropdown.classList.toggle('hidden');
+    });
+</script>
