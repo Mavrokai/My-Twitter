@@ -222,29 +222,71 @@ function get_posts_by_hashtag($hashtag)
 {
     global $pdo;
 
-    $query = "SELECT 
-                p.post_id,
-                p.content,
-                p.created_at,
-                u.username,
-                u.display_name,
-                GROUP_CONCAT(DISTINCT h.tag SEPARATOR ' ') AS hashtags,
-                GROUP_CONCAT(DISTINCT m.file_name SEPARATOR '||') AS media_files
-              FROM Posts p
-              JOIN Users u ON p.user_id = u.user_id
-              JOIN PostHashtag ph ON p.post_id = ph.post_id
-              JOIN Hashtags h ON ph.hashtag_id = h.hashtag_id
-              LEFT JOIN PostMedia pm ON p.post_id = pm.post_id
-              LEFT JOIN Media m ON pm.media_id = m.media_id
-              WHERE h.tag = ?
-              GROUP BY p.post_id
-              ORDER BY p.created_at DESC";
-
-
+    $query = "
+        (SELECT 
+            p.post_id,
+            p.content,
+            p.created_at,
+            u.user_id AS original_user_id,
+            u.username AS original_username,
+            u.display_name AS original_display_name,
+            NULL AS retweeter_id,
+            NULL AS retweeter_username,
+            NULL AS retweeter_display_name,
+            p.created_at AS display_date,
+            GROUP_CONCAT(DISTINCT CONCAT(m.file_name, '|SHORT|', m.short_url) SEPARATOR '||') AS media_data,
+            0 AS is_retweet
+        FROM Posts p
+        JOIN Users u ON p.user_id = u.user_id
+        LEFT JOIN PostMedia pm ON p.post_id = pm.post_id
+        LEFT JOIN Media m ON pm.media_id = m.media_id
+        JOIN PostHashtag ph ON p.post_id = ph.post_id 
+        JOIN Hashtags h ON ph.hashtag_id = h.hashtag_id
+        WHERE h.tag = :hashtag
+        GROUP BY p.post_id)
+        
+        UNION ALL
+        
+        (SELECT 
+            p.post_id,
+            p.content,
+            rp.created_at,
+            u.user_id AS original_user_id,
+            u.username AS original_username,
+            u.display_name AS original_display_name,
+            rp.user_id AS retweeter_id,
+            retweeter.username AS retweeter_username,
+            retweeter.display_name AS retweeter_display_name,
+            rp.created_at AS display_date,
+            GROUP_CONCAT(DISTINCT CONCAT(m.file_name, '|SHORT|', m.short_url) SEPARATOR '||') AS media_data,
+            1 AS is_retweet
+        FROM Reposts rp
+        JOIN Posts p ON rp.post_id = p.post_id
+        JOIN Users u ON p.user_id = u.user_id
+        JOIN Users retweeter ON rp.user_id = retweeter.user_id
+        LEFT JOIN PostMedia pm ON p.post_id = pm.post_id
+        LEFT JOIN Media m ON pm.media_id = m.media_id
+        JOIN PostHashtag ph ON p.post_id = ph.post_id 
+        JOIN Hashtags h ON ph.hashtag_id = h.hashtag_id
+        WHERE h.tag = :hashtag
+        GROUP BY rp.post_id, rp.user_id)
+        
+        ORDER BY display_date DESC";
 
     $stmt = $pdo->prepare($query);
-    $stmt->execute([$hashtag]);
+    $stmt->execute([':hashtag' => $hashtag]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+function is_retweeted_by_user($post_id, $user_id)
+{
+    global $pdo;
+
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM Reposts 
+                          WHERE post_id = ? AND user_id = ?");
+    $stmt->execute([$post_id, $user_id]);
+    return (bool)$stmt->fetchColumn();
 }
 
 

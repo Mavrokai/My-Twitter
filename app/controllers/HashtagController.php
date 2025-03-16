@@ -29,8 +29,13 @@ if (!empty($hashtag)) {
     $hashtag_clean = strtolower(ltrim($hashtag, '#'));
     
     // Cherche les posts avec le hashtag nettoyé
-    $posts = get_posts_by_hashtag($hashtag_clean);
-    
+// Récupérer les posts AVEC les retweets
+$posts = get_posts_by_hashtag($hashtag_clean);
+
+// Ajouter le statut is_retweeted
+foreach ($posts as &$post) {
+    $post['is_retweeted'] = is_retweeted_by_user($post['post_id'], $_SESSION['user_id']);
+}    
     // Pour l'affichage, ajoute le '#' devant
     $hashtag = '#' . $hashtag_clean;
 }

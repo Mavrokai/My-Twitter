@@ -20,6 +20,7 @@ try {
     }
 
     $data = json_decode($input, true);
+    
     if (!isset($data['post_id'])) {
         throw new Exception('Post ID manquant', 400);
     }
