@@ -43,9 +43,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </div>
 </div>
 
+
 <script>
     document.getElementById('dropdownToggle').addEventListener('click', function() {
-        var dropdown = document.getElementById('dropdownMenu');
+        let dropdown = document.getElementById('dropdownMenu');
         dropdown.classList.toggle('hidden');
     });
 </script>
